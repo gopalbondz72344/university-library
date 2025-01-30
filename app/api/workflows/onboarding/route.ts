@@ -2,7 +2,7 @@ import { serve } from "@upstash/workflow/nextjs";
 import { db } from "@/database/drizzle";
 import { users } from "@/database/schema";
 import { eq } from "drizzle-orm";
-import { sendEmail } from "@/lib/workflow"; // Import sendEmail to queue emails
+import { sendEmail } from "@/lib/workflow";
 
 const THREE_DAYS_IN_MS = 3 * 24 * 60 * 60 * 1000;
 const THIRTY_DAYS_IN_MS = 30 * 24 * 60 * 60 * 1000;
