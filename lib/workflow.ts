@@ -1,5 +1,6 @@
 import { Client as WorkflowClient } from "@upstash/workflow";
 import config from "@/lib/config";
+import emailjs from "@emailjs/browser";
 
 export const workflowClient = new WorkflowClient({
   baseUrl: config.env.upstash.qstashUrl,
@@ -20,31 +21,17 @@ export const sendEmail = async (
       throw new Error("Missing EmailJS environment variables");
     }
 
-    const response = await fetch(
-      "https://api.emailjs.com/api/v1.0/email/send",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          service_id: serviceId,
-          template_id: templateId,
-          user_id: publicKey,
-          template_params: {
-            to_email: email,
-            subject,
-            message,
-          },
-        }),
-      },
+    const templateParams = { to_email: email, subject, message };
+
+    const response = await emailjs.send(
+      serviceId,
+      templateId,
+      templateParams,
+      publicKey,
     );
 
-    if (!response.ok) throw new Error("Failed to send email");
-
-    const result = await response.json();
-    console.log("Email sent successfully:", result);
-    return result;
+    console.log("Email sent successfully:", response);
+    return response;
   } catch (error) {
     console.error("Error sending email:", error);
     throw error;
